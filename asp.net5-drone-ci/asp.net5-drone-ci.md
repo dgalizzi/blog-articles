@@ -35,19 +35,19 @@ Luego dentro del contenedor ejecutamos:
 
 Para instalar dependencias y correr los tests xunit implementados. Deberíamos obtener una salida similar a la siguiente:
 
-> xUnit.net DNX Runner (64-bit DNXCore 5.0)
->   Discovering: app
->   Discovered:  app
->   Starting:    app
->     MyFirstDnxUnitTests.Class1.FailingTest [FAIL]
->       Assert.Equal() Failure
->       Expected: 5
->       Actual:   4
->       Stack Trace:
->            at MyFirstDnxUnitTests.Class1.FailingTest()
->   Finished:    app
-> === TEST EXECUTION SUMMARY ===
->    app  Total: 2, Errors: 0, Failed: 1, Skipped: 0, Time: 0.417s
+    xUnit.net DNX Runner (64-bit DNXCore 5.0)
+    Discovering: app
+    Discovered:  app
+    Starting:    app
+        MyFirstDnxUnitTests.Class1.FailingTest [FAIL]
+        Assert.Equal() Failure
+        Expected: 5
+        Actual:   4
+        Stack Trace:
+            at MyFirstDnxUnitTests.Class1.FailingTest()
+    Finished:    app
+    === TEST EXECUTION SUMMARY ===
+    app  Total: 2, Errors: 0, Failed: 1, Skipped: 0, Time: 0.417s
 
 
 ## Drone
