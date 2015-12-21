@@ -20,7 +20,7 @@ Luego, podemos probar la aplicación usando la imagen de docker ya mencionada:
 
     docker run -i -t -v `pwd`:/app microsoft/aspnet:1.0.0-rc1-update1-coreclr /bin/bash
     
-
+Los parámetros indican lo siguiente:
 * -i: Modo interactivo.
 * -t: Pseudo-tty
 * -v: Crear un volumen, esto es, montar el pwd dentro de /app en el contenedor.
@@ -54,8 +54,17 @@ Para instalar dependencias y correr los tests xunit implementados. Deberíamos o
 
 Drone es una plataforma de integración continua que trabaja sobre docker. Cada build es realizado sobre un nuevo contenedor, por lo tanto si ya tenemos una imagen docker que nos provea las herramientas para buildear y testear nuestra aplicación, podremos usar drone de manera muy sencilla.
 
+Para utilizar drone primero tenemos que definir ciertas variables de entorno, para ello podemos crear un archivo
+
+### Webhook y github
+
 ### .drome.yml
 
 .drone.yml es el archivo de configuración necesario para utilizar drone sobre nuestra aplicación.
 
+### NuGet cache
+
+Cada build que drone realice va a descargar e instalar todas las dependencias nuevamente. Para evitar esto debemos cachear las dependencias y recuperarlas en cada build. En caso de que las dependencias cambien _dnu restore_ se encargará de resolverlas.
+
+Para definir un cache en drone utilizamos el servicio _cache_ donde definimos archivos o carpetas que serán cacheadas. Un inconveniente es que drone solo puede cachear archivos dentro de /drone (el directorio de trabajo que define drone dentro del contenedor), mientras que la imagen 
 
