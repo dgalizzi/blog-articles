@@ -11,7 +11,7 @@ La imagen contiene las siguientes aplicaciones:
 
 > Nota: Al momento de escribir este artículo, está en desarrollo [_dotnet_](https://github.com/dotnet/cli), una herramienta que combina dnx y dnu.
 
-Para que sirva como ejemplo creé un [repositorio](https://github.com/dgalizzi/asp.net5-drone-ci-example) en github que contiene un sencillo test de ejemplo implementado con xunit. Pueden clonarlo de la siguiente manera:
+Para que sirva como ejemplo creé un [repositorio en github](https://github.com/dgalizzi/asp.net5-drone-ci-example) que contiene un sencillo test de ejemplo implementado con xunit. Pueden clonarlo de la siguiente manera:
 
     git clone https://github.com/dgalizzi/asp.net5-drone-ci-example.git
     cd asp.net5-drone-ci-example
@@ -21,12 +21,12 @@ Luego, podemos probar la aplicación usando la imagen de docker ya mencionada:
     docker run -i -t -v `pwd`:/app microsoft/aspnet:1.0.0-rc1-update1-coreclr /bin/bash
     
 Los parámetros indican lo siguiente:
-* -i: Modo interactivo.
-* -t: Pseudo-tty
-* -v: Crear un volumen, esto es, montar el pwd dentro de /app en el contenedor.
-* microsoft/aspnet: Imagen sobre la cual iniciar nuestro contenedor.
-* :1.0.0-rc1-update1-coreclr: Versión de la imagen a utilizar.
-* /bin/bash: comando a ejecutar dentro de nuestro contenedor.
+* **-i**: Modo interactivo.
+* **-t**: Pseudo-tty
+* **-v**: Crear un volumen, esto es, montar el pwd dentro de /app en el contenedor.
+* **microsoft/aspnet**: Imagen sobre la cual iniciar nuestro contenedor.
+* **:1.0.0-rc1-update1-coreclr**: Versión de la imagen a utilizar.
+* **/bin/bash**: comando a ejecutar dentro de nuestro contenedor.
 
 Luego dentro del contenedor ejecutamos:
 
