@@ -21,6 +21,7 @@ Luego, podemos probar la aplicación usando la imagen de docker ya mencionada:
     docker run -i -t -v `pwd`:/app microsoft/aspnet:1.0.0-rc1-update1-coreclr /bin/bash
     
 Los parámetros indican lo siguiente:
+
 * **-i**: Modo interactivo.
 * **-t**: Pseudo-tty
 * **-v**: Crear un volumen, esto es, montar el pwd dentro de /app en el contenedor.
