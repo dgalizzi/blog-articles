@@ -11,7 +11,7 @@ La imagen contiene las siguientes aplicaciones:
 
 > Nota: Al momento de escribir este artículo, está en desarrollo [_dotnet_](https://github.com/dotnet/cli), una herramienta que combina dnx y dnu.
 
-Para que sirva como ejemplo creé un repositorio en github que contiene un sencillo test de ejemplo implementado con xunit. Pueden clonarlo de la siguiente manera:
+Para que sirva como ejemplo creé un [repositorio](https://github.com/dgalizzi/asp.net5-drone-ci-example) en github que contiene un sencillo test de ejemplo implementado con xunit. Pueden clonarlo de la siguiente manera:
 
     git clone https://github.com/dgalizzi/asp.net5-drone-ci-example.git
     cd asp.net5-drone-ci-example
