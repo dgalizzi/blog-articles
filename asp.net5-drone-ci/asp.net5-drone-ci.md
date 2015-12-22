@@ -22,14 +22,12 @@ Luego, podemos probar la aplicación usando la imagen de docker ya mencionada:
     
 Los parámetros indican lo siguiente:
 
-
-+ **-i**: Modo interactivo.
-+ **-t**: Pseudo-tty
-+ **-v**: Crear un volumen, esto es, montar el pwd dentro de /app en el contenedor.
-+ **microsoft/aspnet**: Imagen sobre la cual iniciar nuestro contenedor.
-+ **:1.0.0-rc1-update1-coreclr**: Versión de la imagen a utilizar.
-+ **/bin/bash**: comando a ejecutar dentro de nuestro contenedor.
-
+- **-i**: Modo interactivo.
+- **-t**: Pseudo-tty
+- **-v**: Crear un volumen, esto es, montar el pwd dentro de /app en el contenedor.
+- **microsoft/aspnet**: Imagen sobre la cual iniciar nuestro contenedor.
+- **:1.0.0-rc1-update1-coreclr**: Versión de la imagen a utilizar.
+- **/bin/bash**: comando a ejecutar dentro de nuestro contenedor.
 
 Luego dentro del contenedor ejecutamos lo siguiente para instalar dependencias y correr los tests xunit implementados:
 
