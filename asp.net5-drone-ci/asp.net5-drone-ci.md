@@ -30,6 +30,7 @@ Los parámetros indican lo siguiente:
 
 Luego dentro del contenedor ejecutamos:
 
+    cd /app
     dnu restore
     dnx test
 
