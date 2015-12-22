@@ -28,13 +28,13 @@ Los parámetros indican lo siguiente:
 * **:1.0.0-rc1-update1-coreclr**: Versión de la imagen a utilizar.
 * **/bin/bash**: comando a ejecutar dentro de nuestro contenedor.
 
-Luego dentro del contenedor ejecutamos:
+Luego dentro del contenedor ejecutamos lo siguiente para instalar dependencias y correr los tests xunit implementados:
 
     cd /app
     dnu restore
     dnx test
 
-Para instalar dependencias y correr los tests xunit implementados. Deberíamos obtener una salida similar a la siguiente:
+ Deberíamos obtener una salida similar a la siguiente:
 
 
     Feeds used:
