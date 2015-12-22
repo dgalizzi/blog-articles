@@ -1,0 +1,84 @@
+<h1 id="asp.net-5-integración-continua-con-drone-y-docker">ASP.NET 5: Integración continua con Drone y Docker</h1>
+<h2 id="asp.net-5-y-docker">ASP.NET 5 y Docker</h2>
+<p>Microsoft ofrece dockerfiles para crear imágenes y contenedores docker que contengan el entorno de ejecución de aplicaciones ASP.NET 5. La imagen contiene las siguientes aplicaciones:</p>
+<ul>
+<li><strong>dnvm</strong>: Gestor de versiones del runtime .NET. Equivalente a RVM de ruby, o virtualenv de python.</li>
+<li><strong>dnx</strong>: SDK y entorno de ejecución multi-plataforma de aplicaciones .NET.</li>
+<li><strong>dnu</strong>: Utilidad de desarrollo para instalar dependencias nuget. Equivalente a rubygems/bundler en ruby, o npm en nodejs.</li>
+</ul>
+<blockquote>
+<p>Nota: Al momento de escribir este artículo, está en desarrollo <a href="https://github.com/dotnet/cli"><em>dotnet</em></a>, una herramienta que combina dnx y dnu.</p>
+</blockquote>
+<p>Para que sirva como ejemplo creé un <a href="https://github.com/dgalizzi/asp.net5-drone-ci-example">repositorio en github</a> que contiene un sencillo test implementado con xunit. Pueden clonarlo de la siguiente manera:</p>
+<pre><code>git clone https://github.com/dgalizzi/asp.net5-drone-ci-example.git
+cd asp.net5-drone-ci-example</code></pre>
+<p>Luego, podemos probar la aplicación usando la imagen de docker ya mencionada:</p>
+<pre><code>docker run -i -t -v `pwd`:/app microsoft/aspnet:1.0.0-rc1-update1-coreclr /bin/bash</code></pre>
+<p>Los parámetros indican lo siguiente: * <strong>-i</strong>: Modo interactivo. * <strong>-t</strong>: Pseudo-tty * <strong>-v</strong>: Crear un volumen, esto es, montar el pwd dentro de /app en el contenedor. * <strong>microsoft/aspnet</strong>: Imagen sobre la cual iniciar nuestro contenedor. * <strong>:1.0.0-rc1-update1-coreclr</strong>: Versión de la imagen a utilizar. * <strong>/bin/bash</strong>: comando a ejecutar dentro de nuestro contenedor.</p>
+<p>Luego dentro del contenedor ejecutamos lo siguiente para instalar dependencias y correr los tests xunit implementados:</p>
+<pre><code>cd /app
+dnu restore
+dnx test</code></pre>
+<p>Deberíamos obtener una salida similar a la siguiente:</p>
+<pre><code>Feeds used:
+https://api.nuget.org/v3-flatcontainer/
+
+Installed:
+    89 package(s) to /root/.dnx/packages
+root@a074a96c419a:/app# dnx test
+xUnit.net DNX Runner (64-bit DNXCore 5.0)
+Discovering: app
+Discovered:  app
+Starting:    app
+Finished:    app
+=== TEST EXECUTION SUMMARY ===
+app  Total: 1, Errors: 0, Failed: 0, Skipped: 0, Time: 0.375s</code></pre>
+<h2 id="drone">Drone</h2>
+<p><a href="https://github.com/drone/drone">Drone</a> es una plataforma de integración continua que trabaja sobre docker. Cada build es realizado sobre un nuevo contenedor, por lo tanto si ya tenemos una imagen docker que nos provea las herramientas para buildear y testear nuestra aplicación, podremos usar drone de manera muy sencilla.</p>
+<h3 id="webhook-y-github">Webhook y github</h3>
+<p>Drone se encargará de realizar un build por cada push que hagamos a nuestro repositorio en github (también soporta bitbucket y gitlab). Para configurar drone con github vamos a nuestras <a href="https://github.com/settings/developers">aplicaciones</a> y registramos una nueva aplicación. Luego github nos dará un <strong>Client ID</strong> y un <strong>Client Secret</strong> que usaremos para configurar drone.</p>
+<p>Una vez que tenemos el id y el secret, creamos un archivo con el siguiente formato:</p>
+<pre><code>REMOTE_DRIVER=github
+REMOTE_CONFIG=https://github.com?client_id=....&amp;client_secret=....</code></pre>
+<p>Finalmente podemos iniciar drone con el siguiente comando:</p>
+<pre><code>docker run \
+    --volume /var/lib/drone:/var/lib/drone \
+    --volume /var/run/docker.sock:/var/run/docker.sock \
+    --env-file /etc/drone/dronerc \
+    --restart=always \
+    --publish=80:8000 \
+    --detach=true \
+    --name=drone \
+    drone/drone:0.4</code></pre>
+<p>Donde en <em>--env-file</em> indicamos el archivo creado anteriormente, y en <em>--publish</em> indicamos el puerto sobre el que va a correr en el host (80 en este caso).</p>
+<p>Luego accedemos al host en el web browser, nos registramos utilizando github y ahí podremos activar repositorios para utilizar con drone.</p>
+<h3 id="drone.yml">.drone.yml</h3>
+<p>.drone.yml es el archivo de configuración necesario para utilizar drone sobre nuestra aplicación y debe estar en la raíz del repositorio. A continuación el .drone.yml mínimo para ejecutar los tests en nuestra aplicación.</p>
+<pre><code>build:
+    image: microsoft/aspnet:1.0.0-rc1-update1-coreclr
+    commands:
+        - dnu restore
+        - dnx test
+        </code></pre>
+<blockquote>
+<p>Nota: dnx test ejecuta el comando test definido en project.json como dnx.runner.xunit.</p>
+</blockquote>
+<p>En el archivo de configuración definimos los servicios que vamos a usar y configuramos dichos servicios. Aquí, <strong>build</strong> representa el servicio a configurar que se encargará de buildear y testear la aplicación. <strong>image</strong> indica la imagen docker que utilizaremos y <strong>commands</strong> es una lista de comandos a ejecutar dentro del contenedor docker. Todos los comandos deben retornar un exit code exitoso para que la integración continua de <strong>success</strong>.</p>
+<h3 id="nuget-cache">NuGet cache</h3>
+<p>Cada build que drone realice va a descargar e instalar todas las dependencias nuevamente. Para evitar esto debemos cachear las dependencias y recuperarlas en cada build. En caso de que las dependencias cambien <em>dnu restore</em> se encargará de resolverlas.</p>
+<p>Para definir un cache en drone utilizamos el servicio <em>cache</em> donde definimos archivos o carpetas que serán cacheadas. Un inconveniente es que drone solo puede cachear archivos dentro de /drone (el directorio de trabajo que define drone dentro del contenedor), mientras que la imagen de aspnet que usamos instala los paquetes en /root/.dnx. Hay varias formas de solucionar esto, la que mostramos acá es definiendo la variable de entorno <strong>DNX_PACKAGES</strong> que define el directorio en donde se instalarán los paquetes nuget.</p>
+<p>Entonces, sólo basta definir la variable de entorno en alguna carpeta dentro de /drone:</p>
+<pre><code>build:
+    image: microsoft/aspnet:1.0.0-rc1-update1-coreclr
+    environment:
+        - DNX_PACKAGES=/drone/nuget_cache
+    commands:
+        - dnu restore
+        - dnx test
+
+cache:
+    mount:
+        - /drone/nuget_cache
+        - project.lock.json</code></pre>
+<p>Lo primero es agregar en la configuración <strong>environment</strong> del servicio <strong>build</strong> la variable de entorno <strong>DNX_PACKAGES</strong> indicando un directorio donde guardar los paquetes nuget dentro de /drone.</p>
+<p>Luego, en el servicio <strong>cache</strong> tenemos que configurar los archivos o carpetas que deseemos cachear para los siguientes builds.</p>
