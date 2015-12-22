@@ -83,7 +83,7 @@ Luego accedemos al host en el web browser, nos registramos utilizando github y a
 
 ### .drone.yml
 
-.drone.yml es el archivo de configuración necesario para utilizar drone sobre nuestra aplicación. A continuación el .drone.yml mínimo para ejecutar los tests en nuestra aplicación.
+.drone.yml es el archivo de configuración necesario para utilizar drone sobre nuestra aplicación y debe estar en la raíz del repositorio. A continuación el .drone.yml mínimo para ejecutar los tests en nuestra aplicación.
 
     build:
         image: microsoft/aspnet:1.0.0-rc1-update1-coreclr
