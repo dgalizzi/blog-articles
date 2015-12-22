@@ -56,9 +56,30 @@ Para instalar dependencias y correr los tests xunit implementados. Deberíamos o
 
 [Drone](https://github.com/drone/drone) es una plataforma de integración continua que trabaja sobre docker. Cada build es realizado sobre un nuevo contenedor, por lo tanto si ya tenemos una imagen docker que nos provea las herramientas para buildear y testear nuestra aplicación, podremos usar drone de manera muy sencilla.
 
-Para utilizar drone primero tenemos que definir ciertas variables de entorno, para ello podemos crear un archivo
-
 ### Webhook y github
+
+Drone se encargará de realizar un build por cada push que hagamos a nuestro repositorio en github (también soporta bitbucket y gitlab). Para configurar drone con github vamos a nuestras [aplicaciones](https://github.com/settings/developers) y registramos una nueva aplicación. Luego github nos dará un **Client ID** y un **Client Secret** que usaremos para configurar drone.
+
+Una vez que tenemos el id y el secret, creamos un archivo con el siguiente formato:
+
+    REMOTE_DRIVER=github
+    REMOTE_CONFIG=https://github.com?client_id=....&client_secret=....
+
+Finalmente podemos iniciar drone con el siguiente comando:
+
+    docker run \
+        --volume /var/lib/drone:/var/lib/drone \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        --env-file /etc/drone/dronerc \
+        --restart=always \
+        --publish=80:8000 \
+        --detach=true \
+        --name=drone \
+        drone/drone:0.4
+
+Donde en _--env-file_ indicamos el archivo creado anteriormente, y en _--publish_ indicamos el puerto sobre el que va a correr en el host (80 en este caso).
+
+Luego accedemos al host en el web browser, nos registramos utilizando github y ahí podremos activar repositorios para utilizar con drone.
 
 ### .drone.yml
 
