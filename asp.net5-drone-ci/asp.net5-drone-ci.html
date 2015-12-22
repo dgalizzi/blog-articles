@@ -14,7 +14,15 @@
 cd asp.net5-drone-ci-example</code></pre>
 <p>Luego, podemos probar la aplicación usando la imagen de docker ya mencionada:</p>
 <pre><code>docker run -i -t -v `pwd`:/app microsoft/aspnet:1.0.0-rc1-update1-coreclr /bin/bash</code></pre>
-<p>Los parámetros indican lo siguiente: * <strong>-i</strong>: Modo interactivo. * <strong>-t</strong>: Pseudo-tty * <strong>-v</strong>: Crear un volumen, esto es, montar el pwd dentro de /app en el contenedor. * <strong>microsoft/aspnet</strong>: Imagen sobre la cual iniciar nuestro contenedor. * <strong>:1.0.0-rc1-update1-coreclr</strong>: Versión de la imagen a utilizar. * <strong>/bin/bash</strong>: comando a ejecutar dentro de nuestro contenedor.</p>
+<p>Los parámetros indican lo siguiente:</p>
+<ul>
+<li><strong>-i</strong>: Modo interactivo.</li>
+<li><strong>-t</strong>: Pseudo-tty</li>
+<li><strong>-v</strong>: Crear un volumen, esto es, montar el pwd dentro de /app en el contenedor.</li>
+<li><strong>microsoft/aspnet</strong>: Imagen sobre la cual iniciar nuestro contenedor.</li>
+<li><strong>:1.0.0-rc1-update1-coreclr</strong>: Versión de la imagen a utilizar.</li>
+<li><strong>/bin/bash</strong>: comando a ejecutar dentro de nuestro contenedor.</li>
+</ul>
 <p>Luego dentro del contenedor ejecutamos lo siguiente para instalar dependencias y correr los tests xunit implementados:</p>
 <pre><code>cd /app
 dnu restore
