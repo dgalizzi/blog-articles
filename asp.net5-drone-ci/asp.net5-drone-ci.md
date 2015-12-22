@@ -9,7 +9,7 @@ La imagen contiene las siguientes aplicaciones:
 * dnx: SDK y entorno de ejecución multi-plataforma de aplicaciones .NET.
 * dnu: Utilidad de desarrollo para instalar dependencias nuget. Equivalente a rubygems/bundler en ruby, o npm en nodejs.
 
-Nota: Al momento de escribir este artículo, está en desarrollo _dotnet_, una herramienta que combina dnx y dnu.
+> Nota: Al momento de escribir este artículo, está en desarrollo _dotnet_, una herramienta que combina dnx y dnu.
 
 Para que sirva como ejemplo creé un repositorio en github que contiene un sencillo test de ejemplo implementado con xunit. Pueden clonarlo de la siguiente manera:
 
